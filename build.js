@@ -12,6 +12,7 @@ const https = require('https');
 const { program } = require('commander');
 const ExcelJS = require('exceljs');
 const SwaggerParser = require('@apidevtools/swagger-parser');
+const yaml = require('js-yaml');
 
 // --------------------------- CLI ---------------------------
 program
@@ -62,7 +63,11 @@ async function loadSpec(input, token) {
     console.log(`[load] local file: ${abs}`);
     let raw = fs.readFileSync(abs, 'utf8');
     if (raw.charCodeAt(0) === 0xfeff) raw = raw.slice(1); // strip UTF-8 BOM
-    return JSON.parse(raw);
+    try {
+      return yaml.load(raw);
+    } catch (e) {
+      throw new Error(`Failed to parse local file as JSON or YAML: ${e.message}`);
+    }
   }
 
   // 2) http(s) - first attempt
@@ -72,14 +77,19 @@ async function loadSpec(input, token) {
   let text = await res.text();
   if (text.charCodeAt(0) === 0xfeff) text = text.slice(1); // strip BOM if any
 
-  // try parse as JSON directly
-  if (contentType.includes('json') || text.trim().startsWith('{')) {
+  // try parse as JSON/YAML directly
+  const isPossibleSpec =
+    contentType.includes('json') ||
+    contentType.includes('yaml') ||
+    contentType.includes('yml') ||
+    text.trim().startsWith('{') ||
+    text.trim().startsWith('openapi:') ||
+    text.trim().startsWith('swagger:');
+
+  if (isPossibleSpec) {
     try {
-      const obj = JSON.parse(text);
+      const obj = yaml.load(text);
       if (obj && (obj.openapi || obj.swagger)) return obj;
-      throw new Error(
-        `Endpoint returned JSON but not an OpenAPI doc. Body: ${text.slice(0, 200)}...`
-      );
     } catch (e) {
       // fall through to HTML parsing
     }
@@ -122,17 +132,23 @@ async function loadSpec(input, token) {
   if (!specUrl) {
     throw new Error(
       `Could not detect spec URL from HTML at ${input}. ` +
-      `Please pass the OpenAPI JSON URL directly.`
+      `Please pass the OpenAPI JSON/YAML URL directly.`
     );
   }
 
   console.log(`[load] detected spec URL in HTML: ${specUrl}`);
   const res2 = await httpGet(specUrl, token);
-  const json = await res2.json();
-  if (!json || (!json.openapi && !json.swagger)) {
+  const text2 = await res2.text();
+  let obj2;
+  try {
+    obj2 = yaml.load(text2);
+  } catch (e) {
+    throw new Error(`Failed to parse fetched spec from ${specUrl}: ${e.message}`);
+  }
+  if (!obj2 || (!obj2.openapi && !obj2.swagger)) {
     throw new Error(`Fetched ${specUrl} but it doesn't look like an OpenAPI doc.`);
   }
-  return json;
+  return obj2;
 }
 
 /**
