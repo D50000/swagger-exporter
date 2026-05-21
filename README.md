@@ -1,6 +1,6 @@
 # OpenAPI to XLSX (Swagger Exporter)
 
-這是一個基於 Node.js 撰寫的 CLI 工具，能將 OpenAPI 3.x 規範（Swagger 規格書）自動轉換為設計精美、結構清晰且具備內部超連結的 Excel 工作簿（`.xlsx` 檔案）。
+這是一個基於 Node.js 撰寫的 CLI 工具，能將 OpenAPI 3.x / Swagger 2.0 規範（Swagger 規格書）自動轉換為設計精美、結構清晰且具備內部超連結的 Excel 工作簿（`.xlsx` 檔案）。
 
 不論是本地 JSON/YAML 檔案，抑或是 Swagger UI 的網頁 URL，本工具皆能嘗試自動解析並匯出完整的文件對照表。
 
