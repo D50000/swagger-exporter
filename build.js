@@ -140,24 +140,56 @@ async function loadSpec(input, token) {
  */
 function extractSpecUrlFromHtml(html, baseUrl) {
   const patterns = [
-    { re: /url\s*:\s*['"]([^'"]+)['"]/i, priority: 1 },
-    { re: /fetch\s*\(\s*['"]([^'"]+)['"]\s*\)/i, priority: 2 },
-    { re: /urls\s*:\s*\[\s*\{\s*url\s*:\s*['"]([^'"]+)['"]/i, priority: 3 },
-    { re: /url\s*:\s*['"]([^'"]+)['"]/i, priority: 4 }
+    // Explicit url property (e.g. url: "http://...") using word boundary
+    { re: /\burl\s*:\s*['"]([^'"]+)['"]/i, priority: 1 },
+    // Inside a urls array (e.g. urls: [{url: "http://..."}])
+    { re: /\burls\s*:\s*\[\s*\{\s*url\s*:\s*['"]([^'"]+)['"]/i, priority: 2 },
+    // Common variable names used for spec URL definition
+    { re: /\b(?:defaultDefinitionUrl|definitionUrl|specUrl)\s*=\s*['"]([^'"]+)['"]/i, priority: 3 },
+    // fetch("http://...")
+    { re: /\bfetch\s*\(\s*['"]([^'"]+)['"]\s*\)/i, priority: 4 },
+    // Any string ending with /swagger.json, /openapi.json, etc.
+    { re: /['"]([^'"]+\/(?:swagger|openapi)\.(?:json|yaml|yml))['"]/i, priority: 5 },
+    // Any string containing v2/swagger.json or v3/openapi.json etc.
+    { re: /['"]([^'"]+\/(?:v2|v3|v31)\/[^'"]+\.(?:json|yaml|yml))['"]/i, priority: 6 }
   ];
 
   let bestMatch = null;
   let bestPriority = Infinity;
 
   for (const { re, priority } of patterns) {
-    const m = html.match(re);
-    if (m && m[1] && priority < bestPriority) {
-      try {
-        bestMatch = new URL(m[1], baseUrl).toString();
-        bestPriority = priority;
-        if (priority === 1) break;
-      } catch (e) {
-        /* ignore invalid URLs */
+    // Match globally in the html string
+    const matches = html.matchAll(new RegExp(re.source, re.flags + 'g'));
+    for (const m of matches) {
+      if (m && m[1] && priority < bestPriority) {
+        try {
+          const candidate = m[1].trim();
+          // Skip validatorUrl if it doesn't end with JSON/YAML
+          if (candidate.includes('validator.swagger.io/validator') && !candidate.endsWith('.json') && !candidate.endsWith('.yaml')) {
+            continue;
+          }
+          bestMatch = new URL(candidate, baseUrl).toString();
+          bestPriority = priority;
+        } catch (e) {
+          /* ignore invalid URLs */
+        }
+      }
+    }
+  }
+
+  // Fallback: search for any string ending in .json, .yaml, or .yml
+  if (!bestMatch) {
+    const anyJsonYamlRe = /['"]([^'"]+\.(?:json|yaml|yml)(?:\?[^'"]*)?)['"]/gi;
+    let match;
+    while ((match = anyJsonYamlRe.exec(html)) !== null) {
+      const candidate = match[1].trim();
+      if (!candidate.includes('package.json') && !candidate.includes('tsconfig.json')) {
+        try {
+          bestMatch = new URL(candidate, baseUrl).toString();
+          break;
+        } catch (e) {
+          /* ignore */
+        }
       }
     }
   }
@@ -274,22 +306,22 @@ function generateExample(schema, depth = 0, seen = new WeakSet()) {
     }
     case 'string': {
       switch (schema.format) {
-        case 'date':        return '2025-01-01';
-        case 'date-time':   return '2025-01-01T00:00:00Z';
-        case 'uuid':        return '00000000-0000-0000-0000-000000000000';
-        case 'email':       return 'user@example.com';
+        case 'date': return '2025-01-01';
+        case 'date-time': return '2025-01-01T00:00:00Z';
+        case 'uuid': return '00000000-0000-0000-0000-000000000000';
+        case 'email': return 'user@example.com';
         case 'uri':
-        case 'url':         return 'https://example.com';
-        case 'byte':        return 'base64string';
-        case 'binary':      return '<binary>';
-        case 'password':    return '********';
-        default:            return 'string';
+        case 'url': return 'https://example.com';
+        case 'byte': return 'base64string';
+        case 'binary': return '<binary>';
+        case 'password': return '********';
+        default: return 'string';
       }
-    } 
+    }
     case 'integer': return 0;
-    case 'number':  return 0;
+    case 'number': return 0;
     case 'boolean': return false;
-    default:        return null;
+    default: return null;
   }
 }
 
@@ -385,13 +417,13 @@ async function build() {
     views: [{ state: 'frozen', ySplit: 1 }],
   });
   indexWs.columns = [
-    { header: 'No.',           key: 'idx',         width: 6 },
-    { header: 'Method',        key: 'method',      width: 10 },
-    { header: 'API Endpoint',  key: 'path',        width: 55 },
-    { header: 'Category',      key: 'tag',         width: 18 },
-    { header: 'Summary',       key: 'summary',     width: 60 },
-    { header: 'Operation ID',  key: 'operationId', width: 35 },
-    { header: 'Detail',        key: 'detail',      width: 12 },
+    { header: 'No.', key: 'idx', width: 6 },
+    { header: 'Method', key: 'method', width: 10 },
+    { header: 'API Endpoint', key: 'path', width: 55 },
+    { header: 'Category', key: 'tag', width: 18 },
+    { header: 'Summary', key: 'summary', width: 60 },
+    { header: 'Operation ID', key: 'operationId', width: 35 },
+    { header: 'Detail', key: 'detail', width: 12 },
   ];
 
   const headerRow = indexWs.getRow(1);
@@ -421,10 +453,10 @@ async function build() {
     const methodCell = row.getCell('method');
     methodCell.alignment = { horizontal: 'center', vertical: 'middle' };
     const methodColors = {
-      GET:    { bg: 'FFE8F5E9', fg: 'FF2E7D32' },
-      POST:   { bg: 'FFE3F2FD', fg: 'FF1565C0' },
-      PUT:    { bg: 'FFFFF3E0', fg: 'FFEF6C00' },
-      PATCH:  { bg: 'FFF3E5F5', fg: 'FF6A1B9A' },
+      GET: { bg: 'FFE8F5E9', fg: 'FF2E7D32' },
+      POST: { bg: 'FFE3F2FD', fg: 'FF1565C0' },
+      PUT: { bg: 'FFFFF3E0', fg: 'FFEF6C00' },
+      PATCH: { bg: 'FFF3E5F5', fg: 'FF6A1B9A' },
       DELETE: { bg: 'FFFFEBEE', fg: 'FFC62828' },
     };
     const mc = methodColors[o.method];
@@ -498,13 +530,13 @@ async function build() {
       return r;
     };
 
-    addRow('Method',         o.method, { valueBg: 'FFE3F2FD' });
-    addRow('API Endpoint',   o.path, { mono: true, valueBg: 'FFF5F5F5' });
-    addRow('Category',       o.tag);
-    addRow('Operation ID',   o.operationId, { mono: true });
-    addRow('Summary',        o.summary);
-    addRow('Description',    o.description);
-    addRow('Deprecated',     String(o.deprecated), {
+    addRow('Method', o.method, { valueBg: 'FFE3F2FD' });
+    addRow('API Endpoint', o.path, { mono: true, valueBg: 'FFF5F5F5' });
+    addRow('Category', o.tag);
+    addRow('Operation ID', o.operationId, { mono: true });
+    addRow('Summary', o.summary);
+    addRow('Description', o.description);
+    addRow('Deprecated', String(o.deprecated), {
       valueBg: o.deprecated ? 'FFFFEBEE' : undefined
     });
     if (o.security) addRow('Security', formatValue(o.security), { mono: true });
