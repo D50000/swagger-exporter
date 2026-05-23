@@ -137,3 +137,5 @@ Every API route is compiled into its own sheet, named according to its unique `M
 * **`loadSpec()`**: Resolves input sources. For local paths, it reads and parses YAML or JSON. For URLs, it fetches the content and attempts JSON/YAML parsing; if it receives HTML, it delegates to `extractSpecUrlFromHtml()` to locate the underlying spec URL.
 * **`generateExample()`**: Recursively traverses OpenAPI schemas, utilizing `example`, `default`, or `enum` values when present, or generating logical placeholder data depending on data types (e.g., ISO date-times, mock emails, UUIDs).
 * **`makeSheetNamer()`**: Dynamically filters characters invalid in Excel worksheet names, handles name collisions, and truncates names to a maximum of 31 characters.
+
+  TODO: electron app
