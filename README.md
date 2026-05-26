@@ -1,5 +1,9 @@
 # OpenAPI to XLSX (Swagger Exporter)
 
+[![npm version](https://img.shields.io/npm/v/openapi-to-xlsx.svg)](https://www.npmjs.com/package/openapi-to-xlsx)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![NPM Downloads](https://img.shields.io/npm/dm/openapi-to-xlsx.svg)](https://www.npmjs.com/package/openapi-to-xlsx)
+
 A robust Node.js-based CLI utility that converts OpenAPI 3.x and Swagger 2.0 specifications into elegant, professionally styled, and fully hyperlinked Excel workbooks (`.xlsx`).
 
 Whether you provide a local JSON/YAML file, a direct remote spec URL, or a Swagger UI webpage URL, the tool automatically resolves, parses, and exports a comprehensive API catalog.
