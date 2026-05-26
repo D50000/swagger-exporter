@@ -1,13 +1,16 @@
 {
   "name": "openapi-to-xlsx",
   "version": "1.0.0",
-  "private": true,
   "description": "Generate an Excel workbook (index + per-operation sheets with cross-sheet hyperlinks) from OpenAPI/Swagger specs",
   "main": "exporter.js",
   "type": "commonjs",
   "bin": {
     "openapi-to-xlsx": "exporter.js"
   },
+  "files": [
+    "exporter.js",
+    "README.md"
+  ],
   "scripts": {
     "start": "node exporter.js",
     "gen": "node exporter.js"
@@ -20,5 +23,14 @@
     "commander": "^12.1.0",
     "exceljs": "^4.4.0",
     "js-yaml": "^4.1.0"
-  }
+  },
+  "keywords": [
+    "openapi",
+    "swagger",
+    "excel",
+    "xlsx",
+    "exporter"
+  ],
+  "author": "Eddie Hsu <aoe102198@gmail.com>",
+  "license": "GPL-3.0-only"
 }
