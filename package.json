@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "description": "Generate an Excel workbook (index + per-operation sheets with cross-sheet hyperlinks) from OpenAPI/Swagger specs",
-  "main": "build.js",
+  "main": "exporter.js",
   "type": "commonjs",
   "bin": {
-    "openapi-to-xlsx": "build.js"
+    "openapi-to-xlsx": "exporter.js"
   },
   "scripts": {
-    "start": "node build.js",
-    "gen": "node build.js"
+    "start": "node exporter.js",
+    "gen": "node exporter.js"
   },
   "engines": {
     "node": ">=18"
