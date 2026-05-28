@@ -100,7 +100,10 @@ async function loadSpec(input, token) {
 
   // 3a) If HTML references swagger-initializer.js, try to fetch that
   if (!specUrl && /swagger-initializer\.js/.test(text)) {
-    const initUrl = new URL('swagger-initializer.js', input).toString();
+    // Try to extract the exact path of swagger-initializer.js from the HTML script src tag
+    const initMatch = text.match(/src=['"]([^'"]*swagger-initializer\.js[^'"]*)['"]/i);
+    const relativePath = initMatch ? initMatch[1] : 'swagger-initializer.js';
+    const initUrl = new URL(relativePath, input).toString();
     console.log(`[load] fetching initializer: ${initUrl}`);
     try {
       const initRes = await httpGet(initUrl, token);

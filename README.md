@@ -41,6 +41,9 @@ Whether you provide a local JSON/YAML file, a direct remote spec URL, or a Swagg
 
 You can run this tool directly without installation, or install it globally on your system.
 
+> [!NOTE]
+> By default, the generated Excel workbook will be saved inside an `archived/` folder created in your current working directory (e.g., `./archived/Swagger_Petstore-1.0.0.xlsx`).
+
 ### Option A: Run directly via `npx` (No installation needed)
 ```bash
 npx openapi-to-xlsx --url https://petstore.swagger.io/
