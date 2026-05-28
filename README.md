@@ -64,43 +64,44 @@ Execute the tool directly with Node.js or run it via the pre-configured npm scri
 
 ### 💻 Execution Examples
 
-#### 1. Parse a Local OpenAPI YAML or JSON File
-```bash
-node exporter.js --url ./example.yaml
-```
-*This exports the parsed workbook to the `archived/` directory by default, named after the API title.*
-
-#### 2. Convert a Remote OpenAPI JSON/YAML Specification
-```bash
-node exporter.js --url https://petstore.swagger.io/v2/swagger.json
-```
-
-#### 3. Parse a Swagger UI Webpage URL Directly
+#### 1. Parse a Swagger UI Webpage URL Directly (Recommended)
 ```bash
 node exporter.js --url https://petstore.swagger.io/
 ```
 *The utility fetches the webpage HTML, dynamically extracts the spec URL from the UI bundle setup, downloads the schema, and executes the build.*
 
-#### 4. Specify a Custom Output Path
+#### 2. Skip SSL Verification (For Staging & Internal Servers)
 ```bash
-node exporter.js --url ./example.json --out ./exports/my_api_document.xlsx
+node exporter.js --url https://dev-server/swagger/v1/swagger.json --insecure
 ```
+*Bypasses TLS/SSL certificate errors (perfect for self-signed developer environments).*
 
-#### 5. Authenticate via Bearer Token
+#### 3. Authenticate via Bearer Token
 For secured Swagger endpoints requiring authorization:
 ```bash
 node exporter.js --url https://api.example.com/swagger/v1/swagger.json --token "your_bearer_token_here"
 ```
 
-#### 6. Skip SSL Verification (Self-Signed Certificates)
+#### 4. Convert a Remote OpenAPI JSON/YAML Specification
 ```bash
-node exporter.js --url https://dev-server/swagger/v1/swagger.json --insecure
+node exporter.js --url https://petstore.swagger.io/v2/swagger.json
 ```
+
+#### 5. Specify a Custom Output Path
+```bash
+node exporter.js --url ./example.json --out ./exports/my_api_document.xlsx
+```
+
+#### 6. Parse a Local OpenAPI YAML or JSON File
+```bash
+node exporter.js --url ./example.yaml
+```
+*This exports the parsed workbook to the `archived/` directory by default, named after the API title.*
 
 #### 7. Execute via npm Scripts
 You can pass arguments to the npm script using the `--` separator:
 ```bash
-npm run gen -- --url ./example.yaml
+npm run gen -- --url ./example.json
 ```
 
 ---
