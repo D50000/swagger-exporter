@@ -1,6 +1,6 @@
 {
   "name": "openapi-to-xlsx",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generate an Excel workbook (index + per-operation sheets with cross-sheet hyperlinks) from OpenAPI/Swagger specs",
   "main": "exporter.js",
   "type": "commonjs",
