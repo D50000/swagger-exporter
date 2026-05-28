@@ -66,7 +66,7 @@ Execute the tool directly with Node.js or run it via the pre-configured npm scri
 
 #### 1. Parse a Local OpenAPI YAML or JSON File
 ```bash
-node exporter.js --url ./ly-v2-spec.yaml
+node exporter.js --url ./example.yaml
 ```
 *This exports the parsed workbook to the `archived/` directory by default, named after the API title.*
 
@@ -83,7 +83,7 @@ node exporter.js --url https://petstore.swagger.io/
 
 #### 4. Specify a Custom Output Path
 ```bash
-node exporter.js --url ./ly-v2-spec.json --out ./exports/my_api_document.xlsx
+node exporter.js --url ./example.json --out ./exports/my_api_document.xlsx
 ```
 
 #### 5. Authenticate via Bearer Token
@@ -100,7 +100,7 @@ node exporter.js --url https://dev-server/swagger/v1/swagger.json --insecure
 #### 7. Execute via npm Scripts
 You can pass arguments to the npm script using the `--` separator:
 ```bash
-npm run gen -- --url ./ly-v2-spec.yaml
+npm run gen -- --url ./example.yaml
 ```
 
 ---
