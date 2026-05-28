@@ -37,21 +37,39 @@ Whether you provide a local JSON/YAML file, a direct remote spec URL, or a Swagg
 
 ---
 
-## 📦 Installation
+## 📦 Installation & Quick Start
 
-1. Clone or download this repository.
-2. In the root directory of the project, run:
+You can run this tool directly without installation, or install it globally on your system.
+
+### Option A: Run directly via `npx` (No installation needed)
+```bash
+npx openapi-to-xlsx --url https://petstore.swagger.io/
+```
+
+### Option B: Install globally on your system
+```bash
+npm install -g openapi-to-xlsx
+openapi-to-xlsx --url https://petstore.swagger.io/
+```
+
+### Option C: Run from source code (For developers)
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/D50000/swagger-exporter.git
+   cd swagger-exporter
+   ```
+2. Install dependencies:
    ```bash
    npm install
+   ```
+3. Run the exporter:
+   ```bash
+   node exporter.js --url https://petstore.swagger.io/
    ```
 
 ---
 
-## 🚀 Usage
-
-Execute the tool directly with Node.js or run it via the pre-configured npm scripts.
-
-### CLI Options
+## 🚀 CLI Options
 
 | Option | Description | Required | Default |
 | :--- | :--- | :---: | :--- |
@@ -62,43 +80,45 @@ Execute the tool directly with Node.js or run it via the pre-configured npm scri
 
 ---
 
-### 💻 Execution Examples
+## 💻 Execution Examples
 
-#### 1. Parse a Swagger UI Webpage URL Directly (Recommended)
+*Note: The examples below use the global `openapi-to-xlsx` command. If running from source, replace `openapi-to-xlsx` with `node exporter.js`.*
+
+### 1. Parse a Swagger UI Webpage URL Directly (Recommended)
 ```bash
-node exporter.js --url https://petstore.swagger.io/
+openapi-to-xlsx --url https://petstore.swagger.io/
 ```
 *The utility fetches the webpage HTML, dynamically extracts the spec URL from the UI bundle setup, downloads the schema, and executes the build.*
 
-#### 2. Skip SSL Verification (For Staging & Internal Servers)
+### 2. Skip SSL Verification (For Staging & Internal Servers)
 ```bash
-node exporter.js --url https://dev-server/swagger/v1/swagger.json --insecure
+openapi-to-xlsx --url https://dev-server/swagger/v1/swagger.json --insecure
 ```
 *Bypasses TLS/SSL certificate errors (perfect for self-signed developer environments).*
 
-#### 3. Authenticate via Bearer Token
+### 3. Authenticate via Bearer Token
 For secured Swagger endpoints requiring authorization:
 ```bash
-node exporter.js --url https://api.example.com/swagger/v1/swagger.json --token "your_bearer_token_here"
+openapi-to-xlsx --url https://api.example.com/swagger/v1/swagger.json --token "your_bearer_token_here"
 ```
 
-#### 4. Convert a Remote OpenAPI JSON/YAML Specification
+### 4. Convert a Remote OpenAPI JSON/YAML Specification
 ```bash
-node exporter.js --url https://petstore.swagger.io/v2/swagger.json
+openapi-to-xlsx --url https://petstore.swagger.io/v2/swagger.json
 ```
 
-#### 5. Specify a Custom Output Path
+### 5. Specify a Custom Output Path
 ```bash
-node exporter.js --url ./example.json --out ./exports/my_api_document.xlsx
+openapi-to-xlsx --url ./example.json --out ./exports/my_api_document.xlsx
 ```
 
-#### 6. Parse a Local OpenAPI YAML or JSON File
+### 6. Parse a Local OpenAPI YAML or JSON File
 ```bash
-node exporter.js --url ./example.yaml
+openapi-to-xlsx --url ./example.yaml
 ```
 *This exports the parsed workbook to the `archived/` directory by default, named after the API title.*
 
-#### 7. Execute via npm Scripts
+### 7. Execute via npm Scripts (Only when running from source)
 You can pass arguments to the npm script using the `--` separator:
 ```bash
 npm run gen -- --url ./example.json

@@ -27,9 +27,14 @@
   "keywords": [
     "openapi",
     "swagger",
+    "api",
+    "documentation",
+    "tools",
+    "exporter",
     "excel",
     "xlsx",
-    "exporter"
+    "json",
+    "yaml"
   ],
   "author": "Eddie Hsu <aoe102198@gmail.com>",
   "license": "GPL-3.0-only",
