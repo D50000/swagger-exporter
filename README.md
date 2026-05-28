@@ -16,10 +16,10 @@ Whether you provide a local JSON/YAML file, a direct remote spec URL, or a Swagg
    - Parses local OpenAPI/Swagger files in both **JSON** and **YAML** formats.
    - Fetches remote spec URLs.
    - **Automated Swagger UI HTML Extraction**: Accepts a Swagger UI URL directly (e.g., `https://petstore.swagger.io/`). It automatically extracts the underlying specification URL by parsing the HTML, `swagger-initializer.js`, or the `swagger-config` endpoints.
-2. **Interactive API Directory (`API List` Sheet)**:
+2. **Structured API Menu & Index (`API List` Sheet)**:
    - Generates a consolidated table of all API endpoints featuring HTTP methods, tags, summaries, and Operation IDs.
    - Distinct HTTP method branding (GET in green, POST in blue, PUT in orange, PATCH in purple, DELETE in red) for rapid visual scanning.
-   - Embeds "Open" hyperlinks for instant jumping to the dedicated dedicated detailed worksheet.
+   - Embeds "Open" hyperlinks for instant jumping to the dedicated detailed worksheet.
 3. **Granular Detail Sheets**:
    - Generates an isolated worksheet for each API operation (names sanitized and truncated to meet the Excel 31-character limit).
    - Includes full metadata: Method, Endpoint, Category, Operation ID, Summary, Description, Deprecated status, Security schemes, and Parameters.
