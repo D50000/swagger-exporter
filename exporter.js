@@ -36,7 +36,10 @@ function isHttpUrl(s) {
 }
 
 async function httpGet(url, token) {
-  const headers = { Accept: 'application/json, text/html, */*' };
+  const headers = {
+    Accept: 'application/json, text/html, */*',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+  };
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const fetchOpts = { headers };
@@ -72,7 +75,19 @@ async function loadSpec(input, token) {
 
   // 2) http(s) - first attempt
   console.log(`[load] GET ${input}`);
-  const res = await httpGet(input, token);
+  let res;
+  try {
+    res = await httpGet(input, token);
+  } catch (e) {
+    // Some API gateways reject requests to static assets (like swagger index.html)
+    // with 401/403 if a Bearer token is provided. If so, retry without token to fetch HTML.
+    if (token && (e.message.includes('403') || e.message.includes('401'))) {
+      console.log(`[load] GET with token returned 401/403. Retrying without token for Swagger UI HTML...`);
+      res = await httpGet(input, null);
+    } else {
+      throw e;
+    }
+  }
   const contentType = (res.headers.get('content-type') || '').toLowerCase();
   let text = await res.text();
   if (text.charCodeAt(0) === 0xfeff) text = text.slice(1); // strip BOM if any
