@@ -131,6 +131,7 @@ npm run gen -- --url ./example.json
 
 ## 📊 Excel Output Structure
 
+
 ### 1. The `API List` Sheet (Index)
 * **No.**: Auto-incremented sequence number.
 * **Method**: Styled badge representing the HTTP verb:
@@ -144,6 +145,7 @@ npm run gen -- --url ./example.json
 * **Summary**: Short description of the operation (styled with a strikethrough and gray text if the API is marked as `deprecated`).
 * **Operation ID**: The unique API operation identifier.
 * **Detail**: An interactive `Open` hyperlink that jumps directly to the operation's detailed sheet.
+![](https://github.com/D50000/swagger-exporter/blob/main/assets/demo1.jpg)  
 
 ### 2. Operation Detail Sheets
 Every API route is compiled into its own sheet, named according to its unique `METHOD /path` signature.
@@ -157,6 +159,7 @@ Every API route is compiled into its own sheet, named according to its unique `M
   * **Client Error (4xx)**: Orange/yellow highlight, displaying validation or authorization schemas.
   * **Server Error (5xx)**: Red highlight, showing error response structure.
 * **Navigation Link**: A `<< Back to API List` link located at the bottom of the worksheet.
+![](https://github.com/D50000/swagger-exporter/blob/main/assets/demo2.jpg)  
 
 ---
 
@@ -165,5 +168,13 @@ Every API route is compiled into its own sheet, named according to its unique `M
 * **`loadSpec()`**: Resolves input sources. For local paths, it reads and parses YAML or JSON. For URLs, it fetches the content and attempts JSON/YAML parsing; if it receives HTML, it delegates to `extractSpecUrlFromHtml()` to locate the underlying spec URL.
 * **`generateExample()`**: Recursively traverses OpenAPI schemas, utilizing `example`, `default`, or `enum` values when present, or generating logical placeholder data depending on data types (e.g., ISO date-times, mock emails, UUIDs).
 * **`makeSheetNamer()`**: Dynamically filters characters invalid in Excel worksheet names, handles name collisions, and truncates names to a maximum of 31 characters.
+
+---
+
+## 📝 Changelog
+
+For a detailed history of all changes and version releases, please refer to the [CHANGELOG.md](./CHANGELOG.md).
+
+---
 
  #### TODO: electron app
