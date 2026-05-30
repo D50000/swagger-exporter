@@ -177,4 +177,6 @@ For a detailed history of all changes and version releases, please refer to the 
 
 ---
 
- #### TODO: electron app
+ #### TODO:
+- [ ] Upgrade node version
+- [ ] electron app
