@@ -9,7 +9,8 @@
   },
   "files": [
     "exporter.js",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "start": "node exporter.js",

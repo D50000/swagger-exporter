@@ -575,7 +575,7 @@ async function build() {
     });
     if (o.security) addRow('Security', formatValue(o.security), { mono: true });
     if (o.parameters && o.parameters.length) {
-      addRow('Parameters', formatValue(o.parameters), { mono: true, valueBg: 'FFFFF8E7' });
+      addRow('Parameters specification', formatValue(o.parameters), { mono: true, valueBg: 'FFFFF8E7' });
     }
 
     if (o.requestBody) {
@@ -588,7 +588,7 @@ async function build() {
       const reqSchema = pickJsonSchema(o.requestBody.content);
       if (reqSchema) {
         const example = generateExample(reqSchema);
-        addRow('Request example', safeJsonStringify(example), {
+        addRow('Request payload example', safeJsonStringify(example), {
           mono: true,
           valueBg: 'FFE8F5E9'
         });
